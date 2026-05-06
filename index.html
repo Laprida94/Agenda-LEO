@@ -173,6 +173,631 @@
   <div class="trow"><span class="ttime">14:00</span><div class="bl bl-siesta tap" onclick="toggleSiesta(2)">Siesta larga→15:45<span class="done-tick" id="s2">○</span></div><div class="bl bl-mar">Siesta</div><div class="bl bl-mauri">Deporte opt</div><div class="bl bl-empty"></div></div>
 
   <div class="section-hdr">Tarde</div>
+  <div id="acts-manana" class="acts-inject"></div>
+  <div class="trow"><span class="ttime">16:00</span><div class="bl bl-warn tap" onclick="toggleBib(3)">Biberón 4 ➕<span class="done-tick" id="bib3">○</span></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">16:30</span><div class="bl bl-siesta tap" onclick="toggleSiesta(3)">Siesta 4→17:15<span class="done-tick" id="s3">○</span></div><div class="bl bl-paseo">Paseo</div><div class="bl bl-paseo">Paseo</div><div class="bl bl-empty"></div></div>
+  <div id="acts-tarde" class="acts-inject"></div>
+
+  <div class="section-hdr">Noche</div>
+  <div class="trow"><span class="ttime">19:00</span><div class="bl bl-warn tap" onclick="toggleBib(4)">Biberón 5 ➕<span class="done-tick" id="bib4">○</span></div><div class="bl bl-both">Cena</div><div class="bl bl-both">Cena</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">19:30</span><div class="bl bl-banio">Baño + calma</div><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">20:30</span><div class="bl bl-duerme">Duerme</div><div class="bl bl-both">Velada</div><div class="bl bl-both">Velada</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">Noche</span><div class="bl bl-bib">1-2 tomas</div><div class="bl bl-both">Turnos</div><div class="bl bl-both">Turnos</div><div class="bl bl-empty"></div></div>
+  <div id="acts-noche" class="acts-inject"></div>
+
+  <div class="alert alert-warn">⚠️ Ventana vigilia final 18:00→20:30 = 2h30. Adelantar siesta 4 a 16:30 o dormir a las 20:00.</div>
+
+  <div class="act-section">
+    <div class="act-label">Actividades Mar hoy</div>
+    <div class="act-chips" id="mar-chips"></div>
+    <div class="add-row">
+      <select id="mar-type"><option>Deporte</option><option>Amig@s</option><option>Médico</option><option>Trabajo</option><option>Otro</option></select>
+      <input id="mar-time" placeholder="Hora ej: 10:00">
+      <button class="btn" onclick="addAct('mar')">+ Mar</button>
+    </div>
+  </div>
+
+  <div class="act-section">
+    <div class="act-label">Actividades Mauri hoy</div>
+    <div class="act-chips" id="mauri-chips"></div>
+    <div class="add-row">
+      <select id="mauri-type"><option>Deporte</option><option>Amig@s</option><option>Trabajo</option><option>Médico</option><option>Otro</option></select>
+      <input id="mauri-time" placeholder="Hora ej: 10:00">
+      <button class="btn" onclick="addAct('mauri')">+ Mauri</button>
+    </div>
+  </div>
+
+  <div class="act-section">
+    <div class="act-label">Cuidadora — Emilia</div>
+    <div class="add-row" style="margin-bottom:6px">
+      <button class="btn btn-emilia" id="btn-emilia" onclick="toggleEmilia()">Leo con Emilia hoy</button>
+      <input id="emilia-time" placeholder="Horario ej: 14-17h">
+    </div>
+    <div id="emilia-alert" style="display:none" class="alert alert-info">Leo con Emilia — dejad biberón preparado, foto del planning y número de pediatra.</div>
+  </div>
+
+  <div class="benidorm-card">
+    <div class="benidorm-title">🏖️ Visita Yiya y Ángel — Benidorm</div>
+    <div id="benidorm-list"></div>
+    <div class="add-row" style="margin-top:8px">
+      <input id="ben-fecha" placeholder="Fecha ej: 15-17 jun">
+      <input id="ben-nota" placeholder="Motivo / nota">
+      <button class="btn" onclick="addBenidorm()">Agendar</button>
+    </div>
+    <div id="benidorm-alert" style="display:none;margin-top:6px" class="alert alert-yiya">Visita a Benidorm — llevar biberones extra, ropa y planning para Yiya y Ángel.</div>
+  </div>
+</div>
+
+<!-- ═══ SEMANA ═══ -->
+<div id="tab-semana" class="panel">
+  <div class="sync-bar"><span class="sync-dot"></span>Sincronizado en tiempo real <span class="firebase-badge">Firebase</span></div>
+  <div class="week-grid" id="week-grid"></div>
+  <div class="add-row" style="margin-top:12px">
+    <select id="wk-day"><option value="0">Lun</option><option value="1">Mar</option><option value="2">Mié</option><option value="3">Jue</option><option value="4">Vie</option><option value="5">Sáb</option><option value="6">Dom</option></select>
+    <select id="wk-who"><option value="mar">Mar</option><option value="mauri">Mauri</option><option value="ambos">Ambos</option><option value="emilia">Emilia</option><option value="yiya">Yiya+Ángel</option></select>
+    <input id="wk-evt" placeholder="Actividad">
+    <button class="btn" onclick="addWeekEvt()">Añadir</button>
+  </div>
+</div>
+
+<!-- ═══ ESCENARIOS ═══ -->
+<div id="tab-escenarios" class="panel">
+  <div class="scenario-card">
+    <div class="sc-title">🌙 Cena fuera → vuelta 21-22h</div>
+    <div class="sc-badge sc-badge-warn">ajusta el día siguiente</div>
+    <div class="step"><span class="step-t">Ese día</span>Siesta 4 antes de 16:00. Biberón 5 antes de salir ~18:30.</div>
+    <div class="step"><span class="step-t">Al volver</span>Leo ya duerme — NO despertéis. Toma nocturna sobre la marcha.</div>
+    <div class="step"><span class="step-t">Día siguiente</span>Despertar 30-60 min más tarde. No forcéis el horario.</div>
+    <div class="step"><span class="step-t">Siestas</span>Contad 1h45 desde el despertar real, no desde las 8:00.</div>
+    <div class="step"><span class="step-t">Clave</span>El plan se autorregula en 1-2 días.</div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-title">😴 Siesta saltada — plan de rescate</div>
+    <div class="sc-badge sc-badge-warn">por orden</div>
+    <div class="step"><span class="step-t">Siesta 1</span>No duerme → adelantar siesta 2 a las 11:00. Vigilia siguiente máx 1h.</div>
+    <div class="step"><span class="step-t">Siesta 2</span>No duerme → siesta larga a las 12:30 directa. Carrito si hace falta.</div>
+    <div class="step"><span class="step-t">Siesta 3</span>No duerme → siesta 4 antes de 16:30. Noche a las 20:00.</div>
+    <div class="step"><span class="step-t">Siesta 4</span>No duerme → noche a las 19:30. Señal de sobrecansancio.</div>
+    <div class="step"><span class="step-t">Regla de oro</span>Siesta saltada = acortar vigilia + adelantar noche. NUNCA alargar.</div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-title">👵 Leo con Emilia</div>
+    <div class="sc-badge sc-badge-info">check antes de salir</div>
+    <div class="step"><span class="step-t">Preparad</span>Biberones listos con cantidad y temperatura. Foto del planning.</div>
+    <div class="step"><span class="step-t">Rutina</span>Señales de sueño: frotar ojos, mirada perdida, bostezo → siesta YA.</div>
+    <div class="step"><span class="step-t">Contacto</span>Número pediatra accesible. Alarma: llanto >1h o rechazo total.</div>
+    <div class="step"><span class="step-t">Al volver</span>Recalculad ventana desde el último despertar real.</div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-title">🏖️ Visita Yiya y Ángel — Benidorm</div>
+    <div class="sc-badge sc-badge-ok">planificad con antelación</div>
+    <div class="step"><span class="step-t">Viaje</span>Salid después de siesta larga (16:00+) o muy temprano para que duerma en coche.</div>
+    <div class="step"><span class="step-t">Biberones</span>Llevar cantidad extra + agua. Calcular tomas del trayecto.</div>
+    <div class="step"><span class="step-t">Allí</span>Mantened rutina. Entorno nuevo = más estimulación → vigilad sobrecansancio.</div>
+    <div class="step"><span class="step-t">Yiya+Ángel</span>Copia del planning y señales de sueño. Mismas instrucciones que Emilia.</div>
+    <div class="step"><span class="step-t">Vuelta</span>Esperables 1-2 días de desajuste. Normal, no patológico.</div>
+  </div>
+  <div class="scenario-card">
+    <div class="sc-title">🏃 Actividad padres en horario Leo</div>
+    <div class="sc-badge sc-badge-ok">sin problema si se planifica</div>
+    <div class="step"><span class="step-t">Deporte Mauri</span>7-9h ideal, antes que despierte Leo.</div>
+    <div class="step"><span class="step-t">Deporte Mar</span>Siesta 1 (9:45-10:45) o siesta larga (14-16h).</div>
+    <div class="step"><span class="step-t">Médico/trabajo</span>Siesta larga (14-16h) o post-siesta 4 (17:15-19:00).</div>
+    <div class="step"><span class="step-t">Ambos fuera</span>Emilia para siesta larga (14-16h): el bloque más predecible.</div>
+  </div>
+</div>
+
+<!-- ═══ CHECKLIST ═══ -->
+<div id="tab-checklist" class="panel">
+  <div class="sync-bar"><span class="sync-dot"></span>Sincronizado en tiempo real <span class="firebase-badge">Firebase</span></div>
+  <div class="checklist" id="checklist"></div>
+  <button class="btn" style="margin-top:12px;width:100%;padding:12px" onclick="resetChecklist()">Reiniciar día ↺</button>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+// ─── FIREBASE CONFIG ── REEMPLAZAR CON VUESTRA CONFIG ──────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyDSnaDSGnS8JdU8WjPMllbSR1yz8qxyPBM",
+  authDomain: "agenda-leo-a035c.firebaseapp.com",
+  databaseURL: "https://agenda-leo-a035c-default-rtdb.firebaseio.com",
+  projectId: "agenda-leo-a035c",
+  storageBucket: "agenda-leo-a035c.firebasestorage.app",
+  messagingSenderId: "580670915038",
+  appId: "1:580670915038:web:af887679247860ea985d4f"
+};
+// ───────────────────────────────────────────────────────────────────────────
+
+let db, dbRef;
+let localState = {
+  bibs: [false,false,false,false,false],
+  siestas: [false,false,false,false],
+  marActs: [], mauriActs: [],
+  emiliaOn: false,
+  benidorm: [],
+  weekEvents: [
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'ambos',text:'Familia'}],
+    [{who:'ambos',text:'Familia'}]
+  ],
+  checkDone: Array(12).fill(false)
+};
+
+const checkItems = [
+  {text:'Biberón 1 (08:00)',     bg:'#FAC775',color:'#412402'},
+  {text:'Siesta 1 (09:45)',      bg:'#C0DD97',color:'#173404'},
+  {text:'Biberón 2 (11:00)',     bg:'#FAC775',color:'#412402'},
+  {text:'Siesta 2 (11:45)',      bg:'#C0DD97',color:'#173404'},
+  {text:'Paseo mediodía',        bg:'#9FE1CB',color:'#04342C'},
+  {text:'Biberón 3 (13:30)',     bg:'#FAC775',color:'#412402'},
+  {text:'Siesta larga (14:00)',  bg:'#C0DD97',color:'#173404'},
+  {text:'Biberón 4 (16:00)',     bg:'#FAC775',color:'#412402'},
+  {text:'Siesta 4 (16:30)',      bg:'#C0DD97',color:'#173404'},
+  {text:'Biberón 5 (19:00)',     bg:'#FAC775',color:'#412402'},
+  {text:'Baño + rutina (19:30)', bg:'#F5C4B3',color:'#712B13'},
+  {text:'Duerme (20:30)',        bg:'#9FE1CB',color:'#04342C'}
+];
+
+const whoColors = {
+  mar:   {bg:'#EAF3DE',color:'#27500A'},
+  mauri: {bg:'#C0DD97',color:'#173404'},
+  ambos: {bg:'#F1EFE8',color:'#444441'},
+  emilia:{bg:'#FAC775',color:'#412402'},
+  yiya:  {bg:'#9FE1CB',color:'#04342C'}
+};
+
+const dayNames = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+// Fecha header
+const now = new Date();
+document.getElementById('header-date').textContent =
+  now.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+
+// ─── FIREBASE INIT ────────────────────────────────────────────────────────
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  const today = now.toISOString().slice(0,10);
+  dbRef = db.ref('leo/' + today);
+
+  dbRef.on('value', snap => {
+    const data = snap.val();
+    if (data) {
+      localState = Object.assign(localState, data);
+      if (!localState.weekEvents) localState.weekEvents = getDefaultWeek();
+      if (!localState.checkDone) localState.checkDone = Array(12).fill(false);
+    }
+    renderAll();
+    document.getElementById('sync-status').textContent = 'En línea · ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  });
+
+  db.ref('.info/connected').on('value', snap => {
+    document.getElementById('sync-status').textContent = snap.val() ? 'En línea' : 'Sin conexión';
+  });
+} catch(e) {
+  document.getElementById('sync-status').textContent = 'Modo local (configura Firebase)';
+  renderAll();
+}
+
+function save() {
+  if (dbRef) dbRef.set(localState).catch(console.error);
+}
+
+function getDefaultWeek() {
+  return [
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'mauri',text:'Deporte'},{who:'mar',text:'Deporte'}],
+    [{who:'ambos',text:'Familia'}],
+    [{who:'ambos',text:'Familia'}]
+  ];
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────
+function renderAll() {
+  updateKPIs();
+  renderBibs();
+  renderSiestas();
+  renderActs('mar');
+  renderActs('mauri');
+  renderAllActs();
+  renderEmilia();
+  renderBenidorm();
+  renderWeek();
+  renderChecklist();
+}
+
+function updateKPIs() {
+  document.getElementById('kpi-bibs').textContent = localState.bibs.filter(Boolean).length + '/5';
+  document.getElementById('kpi-siestas').textContent = localState.siestas.filter(Boolean).length + '/4';
+  const n = new Date();
+  const m = n.getHours()*60 + n.getMinutes();
+  const slots = [
+    {s:7*60,e:9*60,who:'Mauri',sub:'deporte'},
+    {s:9*60+45,e:10*60+45,who:'Leo',sub:'siesta 1'},
+    {s:11*60+45,e:12*60+30,who:'Leo',sub:'siesta 2'},
+    {s:12*60+30,e:14*60,who:'Familia',sub:'paseo+comida'},
+    {s:14*60,e:15*60+45,who:'Leo+Mar',sub:'siesta larga'},
+    {s:16*60+30,e:17*60+15,who:'Leo',sub:'siesta 4'},
+    {s:19*60+30,e:20*60+30,who:'Leo',sub:'rutina'},
+    {s:20*60+30,e:24*60,who:'Leo',sub:'durmiendo'}
+  ];
+  const cur = slots.find(s => m >= s.s && m < s.e);
+  document.getElementById('kpi-now').textContent = cur ? cur.who : 'Vigilia';
+  document.getElementById('kpi-now-sub').textContent = cur ? cur.sub : 'ventana activa';
+}
+
+function renderBibs() {
+  localState.bibs.forEach((v,i) => {
+    const el = document.getElementById('bib'+i);
+    if (el) el.textContent = v ? '✓' : '○';
+  });
+}
+
+function renderSiestas() {
+  localState.siestas.forEach((v,i) => {
+    const el = document.getElementById('s'+i);
+    if (el) el.textContent = v ? '✓' : '○';
+  });
+}
+
+function renderActs(who) {
+  const acts = who === 'mar' ? localState.marActs : localState.mauriActs;
+  const el = document.getElementById(who+'-chips');
+  if (!el) return;
+  el.innerHTML = '';
+  (acts || []).forEach((a,i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip chip-'+who;
+    chip.textContent = (a.time ? a.time+' — ' : '') + a.type + ' ×';
+    chip.onclick = () => {
+      if (who === 'mar') localState.marActs.splice(i,1);
+      else localState.mauriActs.splice(i,1);
+      save(); renderAllActs();
+    };
+    el.appendChild(chip);
+  });
+  renderAllActs();
+}
+
+function renderAllActs() {
+  ['acts-manana','acts-tarde','acts-noche'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+  const allActs = [
+    ...(localState.marActs||[]).map(a => ({...a, who:'mar'})),
+    ...(localState.mauriActs||[]).map(a => ({...a, who:'mauri'}))
+  ];
+  if (allActs.length === 0) return;
+  const sorted = allActs.sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99'));
+  sorted.forEach(a => {
+    const t = a.time || '00:00';
+    const h = parseInt(t.split(':')[0]) || 0;
+    let containerId = 'acts-noche';
+    if (h < 12) containerId = 'acts-manana';
+    else if (h < 19) containerId = 'acts-tarde';
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const row = document.createElement('div');
+    row.className = 'trow';
+    row.style.marginBottom = '3px';
+    const timeEl = document.createElement('span');
+    timeEl.className = 'ttime';
+    timeEl.textContent = t;
+    row.appendChild(timeEl);
+    ['leo','mar','mauri','emilia'].forEach(colWho => {
+      const bl = document.createElement('div');
+      if (colWho === a.who) {
+        bl.className = 'bl bl-' + a.who;
+        bl.textContent = a.type;
+      } else {
+        bl.className = 'bl bl-empty';
+      }
+      row.appendChild(bl);
+    });
+    container.appendChild(row);
+  });
+}
+
+function renderEmilia() {
+  const btn = document.getElementById('btn-emilia');
+  const alert = document.getElementById('emilia-alert');
+  if (!btn || !alert) return;
+  if (localState.emiliaOn) {
+    btn.textContent = 'Emilia confirmada ✓';
+    btn.classList.add('active');
+    alert.style.display = 'block';
+  } else {
+    btn.textContent = 'Leo con Emilia hoy';
+    btn.classList.remove('active');
+    alert.style.display = 'none';
+  }
+}
+
+function renderBenidorm() {
+  const list = document.getElementById('benidorm-list');
+  const alertEl = document.getElementById('benidorm-alert');
+  if (!list) return;
+  list.innerHTML = '';
+  (localState.benidorm || []).forEach((b,i) => {
+    const div = document.createElement('div');
+    div.className = 'benidorm-item';
+    div.innerHTML = '📍 ' + b.fecha + (b.nota ? ' — ' + b.nota : '') +
+      '<span class="del-btn" onclick="delBenidorm('+i+')">×</span>';
+    list.appendChild(div);
+  });
+  if (alertEl) alertEl.style.display = (localState.benidorm||[]).length ? 'block' : 'none';
+}
+
+function renderWeek() {
+  const grid = document.getElementById('week-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const evts = localState.weekEvents || getDefaultWeek();
+  dayNames.forEach((d,i) => {
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.innerHTML = '<div class="day-hdr">'+d+'</div>';
+    (evts[i] || []).forEach(ev => {
+      const c = whoColors[ev.who] || whoColors.ambos;
+      const tag = document.createElement('div');
+      tag.className = 'day-evt';
+      tag.style.background = c.bg;
+      tag.style.color = c.color;
+      tag.textContent = ev.text;
+      col.appendChild(tag);
+    });
+    grid.appendChild(col);
+  });
+}
+
+function renderChecklist() {
+  const el = document.getElementById('checklist');
+  if (!el) return;
+  el.innerHTML = '';
+  checkItems.forEach((item,i) => {
+    const done = (localState.checkDone || [])[i];
+    const div = document.createElement('div');
+    div.className = 'check-item' + (done ? ' done' : '');
+    div.style.background = done ? '#F5F5F5' : item.bg;
+    div.style.color = done ? '#888' : item.color;
+    div.onclick = () => {
+      if (!localState.checkDone) localState.checkDone = Array(12).fill(false);
+      localState.checkDone[i] = !localState.checkDone[i];
+      save(); renderChecklist();
+    };
+    const circle = document.createElement('div');
+    circle.className = 'check-circle';
+    circle.style.borderColor = done ? '#639922' : item.color;
+    circle.style.background = done ? '#639922' : 'transparent';
+    circle.style.color = 'white';
+    if (done) circle.textContent = '✓';
+    div.appendChild(circle);
+    const span = document.createElement('span');
+    span.textContent = item.text;
+    div.appendChild(span);
+    el.appendChild(div);
+  });
+}
+
+// ─── ACCIONES ─────────────────────────────────────────────────────────────
+function showTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+function toggleBib(i) {
+  localState.bibs[i] = !localState.bibs[i];
+  save(); renderBibs(); updateKPIs();
+}
+
+function toggleSiesta(i) {
+  localState.siestas[i] = !localState.siestas[i];
+  save(); renderSiestas(); updateKPIs();
+}
+
+function addAct(who) {
+  const type = document.getElementById(who+'-type').value;
+  const time = document.getElementById(who+'-time').value || '';
+  if (who === 'mar') { if (!localState.marActs) localState.marActs=[]; localState.marActs.push({type,time}); }
+  else { if (!localState.mauriActs) localState.mauriActs=[]; localState.mauriActs.push({type,time}); }
+  document.getElementById(who+'-time').value = '';
+  save(); renderActs(who);
+}
+
+function toggleEmilia() {
+  localState.emiliaOn = !localState.emiliaOn;
+  save(); renderEmilia();
+}
+
+function addBenidorm() {
+  const fecha = document.getElementById('ben-fecha').value.trim();
+  const nota = document.getElementById('ben-nota').value.trim();
+  if (!fecha) return;
+  if (!localState.benidorm) localState.benidorm = [];
+  localState.benidorm.push({fecha, nota});
+  document.getElementById('ben-fecha').value = '';
+  document.getElementById('ben-nota').value = '';
+  save(); renderBenidorm();
+}
+
+function delBenidorm(i) {
+  localState.benidorm.splice(i,1);
+  save(); renderBenidorm();
+}
+
+function addWeekEvt() {
+  const day = parseInt(document.getElementById('wk-day').value);
+  const who = document.getElementById('wk-who').value;
+  const text = document.getElementById('wk-evt').value.trim();
+  if (!text) return;
+  if (!localState.weekEvents) localState.weekEvents = getDefaultWeek();
+  if (!localState.weekEvents[day]) localState.weekEvents[day] = [];
+  localState.weekEvents[day].push({who, text});
+  document.getElementById('wk-evt').value = '';
+  save(); renderWeek();
+}
+
+function resetChecklist() {
+  localState.checkDone = Array(12).fill(false);
+  save(); renderChecklist();
+}
+
+renderAll();
+setInterval(updateKPIs, 60000);
+</script>
+</body>
+</html>
+  .panel.active { display: block; }
+
+  .section-hdr { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: white; background: var(--green-mid); padding: 5px 10px; border-radius: 6px; margin: 12px 0 6px; }
+
+  .trow { display: grid; grid-template-columns: 52px 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 3px; align-items: center; }
+  .ttime { font-size: 10px; color: var(--gray-text); font-weight: 600; }
+  .bl { border-radius: 8px; padding: 5px 7px; font-size: 10px; font-weight: 600; min-height: 28px; display: flex; align-items: center; line-height: 1.3; cursor: default; }
+  .bl.tap { cursor: pointer; }
+  .bl.tap:active { opacity: 0.7; transform: scale(0.97); }
+  .bl-siesta { background: var(--green-light); color: var(--text); }
+  .bl-bib    { background: var(--yellow); color: var(--yellow-dark); }
+  .bl-banio  { background: var(--salmon); color: var(--salmon-dark); }
+  .bl-duerme { background: var(--green-water); color: #04342C; }
+  .bl-mar    { background: var(--green-pale); color: var(--green-dark); }
+  .bl-mauri  { background: var(--green-light); color: var(--text); }
+  .bl-emilia { background: var(--yellow-pale); color: var(--warn-text); }
+  .bl-both   { background: #F1EFE8; color: var(--gray-text); }
+  .bl-paseo  { background: var(--green-water); color: #04342C; }
+  .bl-empty  { background: transparent; }
+  .bl-warn   { background: var(--yellow-pale); color: var(--warn-text); border: 1.5px dashed #BA7517; }
+  .done-tick { margin-left: auto; font-size: 12px; }
+
+  .col-heads { display: grid; grid-template-columns: 52px 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+  .col-head { font-size: 9px; font-weight: 700; color: var(--green-dark); padding: 0 4px; }
+
+  .alert { border-radius: 8px; padding: 10px 12px; font-size: 11px; margin: 8px 0; border-left: 3px solid; }
+  .alert-warn { background: var(--warn-bg); color: var(--warn-text); border-color: #BA7517; }
+  .alert-ok   { background: var(--green-pale); color: var(--green-dark); border-color: var(--green-mid); }
+  .alert-info { background: var(--green-light); color: var(--text); border-color: var(--green-dark); }
+  .alert-yiya { background: var(--green-water); color: #04342C; border-color: var(--green-teal); }
+
+  .act-section { margin-top: 12px; }
+  .act-label { font-size: 11px; font-weight: 700; color: var(--green-dark); margin-bottom: 6px; }
+  .act-chips { display: flex; flex-wrap: wrap; gap: 5px; min-height: 28px; margin-bottom: 6px; }
+  .chip { border-radius: 99px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .chip-mar   { background: var(--green-pale); color: var(--green-dark); }
+  .chip-mauri { background: var(--green-light); color: var(--text); }
+  .add-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .add-row select, .add-row input { font-size: 12px; padding: 7px 8px; border: 1px solid var(--gray-med); border-radius: 8px; background: white; }
+  .add-row input { width: 90px; }
+  .btn { font-size: 12px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--green-mid); background: var(--green-pale); color: var(--green-dark); font-weight: 600; cursor: pointer; }
+  .btn:active { background: var(--green-light); }
+  .btn-emilia { background: var(--yellow-pale); color: var(--warn-text); border-color: var(--yellow); }
+  .btn-emilia.active { background: var(--green-light); color: var(--text); border-color: var(--green-mid); }
+
+  .benidorm-card { background: var(--green-pale); border: 1px solid var(--green-light); border-radius: 12px; padding: 12px; margin-top: 8px; }
+  .benidorm-title { font-size: 12px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+  .benidorm-item { background: var(--green-light); color: var(--text); border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 600; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .del-btn { color: var(--green-dark); opacity: 0.5; cursor: pointer; font-size: 14px; }
+
+  .week-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+  .day-col { background: white; border-radius: 8px; padding: 4px; min-height: 120px; }
+  .day-hdr { font-size: 9px; font-weight: 700; color: var(--green-dark); text-align: center; margin-bottom: 4px; }
+  .day-evt { border-radius: 4px; padding: 3px 4px; font-size: 9px; font-weight: 600; margin-bottom: 2px; }
+
+  .scenario-card { background: white; border: 1px solid var(--gray-med); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .sc-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .sc-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; display: inline-block; margin-bottom: 8px; }
+  .sc-badge-warn  { background: var(--yellow-pale); color: var(--warn-text); }
+  .sc-badge-ok    { background: var(--green-pale); color: var(--green-dark); }
+  .sc-badge-info  { background: var(--green-light); color: var(--text); }
+  .step { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--gray-light); font-size: 11px; color: var(--gray-text); }
+  .step:last-child { border: none; }
+  .step-t { font-size: 10px; font-weight: 700; color: var(--text); min-width: 70px; }
+
+  .checklist { display: flex; flex-direction: column; gap: 5px; }
+  .check-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600; transition: opacity 0.15s; }
+  .check-item.done { opacity: 0.4; text-decoration: line-through; }
+  .check-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; }
+  .check-item.done .check-circle { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+
+  .sync-bar { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--gray-text); background: white; padding: 6px 12px; border-radius: 8px; margin-bottom: 10px; }
+  .firebase-badge { background: var(--yellow-pale); color: var(--warn-text); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .leg { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--gray-text); }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div>
+    <h1>🍼 Leo · Planning Familiar</h1>
+    <div class="header-meta"><span class="sync-dot"></span><span id="sync-status">Conectando...</span></div>
+  </div>
+  <div style="font-size:11px;opacity:0.8;text-align:right" id="header-date"></div>
+</div>
+
+<div class="kpi-bar">
+  <div class="kpi"><div class="kpi-val" id="kpi-age">3m</div><div class="kpi-lbl">Edad Leo</div></div>
+  <div class="kpi"><div class="kpi-val" id="kpi-bibs">0/5</div><div class="kpi-lbl">Biberones</div></div>
+  <div class="kpi"><div class="kpi-val" id="kpi-siestas">0/4</div><div class="kpi-lbl">Siestas</div></div>
+  <div class="kpi"><div class="kpi-val" id="kpi-now" style="font-size:13px">—</div><div class="kpi-lbl" id="kpi-now-sub">ahora</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dia',this)"><span class="tab-icon">🗓️</span>Hoy</div>
+  <div class="tab" onclick="showTab('semana',this)"><span class="tab-icon">📆</span>Semana</div>
+  <div class="tab" onclick="showTab('escenarios',this)"><span class="tab-icon">⚡</span>Escenarios</div>
+  <div class="tab" onclick="showTab('checklist',this)"><span class="tab-icon">✅</span>Checklist</div>
+</div>
+
+<!-- ═══ HOY ═══ -->
+<div id="tab-dia" class="panel active">
+  <div class="sync-bar"><span class="sync-dot"></span>Sincronizado en tiempo real <span class="firebase-badge">Firebase</span></div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#C0DD97"></div>Siesta</div>
+    <div class="leg"><div class="leg-dot" style="background:#FAC775"></div>Biberón</div>
+    <div class="leg"><div class="leg-dot" style="background:#F5C4B3"></div>Baño</div>
+    <div class="leg"><div class="leg-dot" style="background:#9FE1CB"></div>Duerme</div>
+    <div class="leg"><div class="leg-dot" style="background:#EAF3DE"></div>Mar</div>
+    <div class="leg"><div class="leg-dot" style="background:#C0DD97"></div>Mauri</div>
+    <div class="leg"><div class="leg-dot" style="background:#FAC775"></div>Emilia</div>
+  </div>
+
+  <div class="col-heads">
+    <div></div>
+    <div class="col-head">Leo</div>
+    <div class="col-head">Mar</div>
+    <div class="col-head">Mauri</div>
+    <div class="col-head">Emilia</div>
+  </div>
+
+  <div class="section-hdr">Mañana</div>
+  <div class="trow"><span class="ttime">07:00</span><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-mauri">Deporte</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">08:00</span><div class="bl bl-bib tap" onclick="toggleBib(0)">Biberón 1<span class="done-tick" id="bib0">○</span></div><div class="bl bl-empty"></div><div class="bl bl-mauri">Deporte</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">09:00</span><div class="bl bl-empty"></div><div class="bl bl-mar">Desayuno</div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">09:45</span><div class="bl bl-siesta tap" onclick="toggleSiesta(0)">Siesta 1→10:45<span class="done-tick" id="s0">○</span></div><div class="bl bl-mar">Deporte</div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">11:00</span><div class="bl bl-warn tap" onclick="toggleBib(1)">Biberón 2 ➕<span class="done-tick" id="bib1">○</span></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+
+  <div class="section-hdr">Mediodía</div>
+  <div class="trow"><span class="ttime">11:45</span><div class="bl bl-siesta tap" onclick="toggleSiesta(1)">Siesta 2→12:30<span class="done-tick" id="s1">○</span></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">12:30</span><div class="bl bl-paseo">Paseo</div><div class="bl bl-paseo">Paseo</div><div class="bl bl-paseo">Paseo</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">13:30</span><div class="bl bl-bib tap" onclick="toggleBib(2)">Biberón 3<span class="done-tick" id="bib2">○</span></div><div class="bl bl-both">Comen</div><div class="bl bl-both">Comen</div><div class="bl bl-empty"></div></div>
+  <div class="trow"><span class="ttime">14:00</span><div class="bl bl-siesta tap" onclick="toggleSiesta(2)">Siesta larga→15:45<span class="done-tick" id="s2">○</span></div><div class="bl bl-mar">Siesta</div><div class="bl bl-mauri">Deporte opt</div><div class="bl bl-empty"></div></div>
+
+  <div class="section-hdr">Tarde</div>
   <div class="trow"><span class="ttime">16:00</span><div class="bl bl-warn tap" onclick="toggleBib(3)">Biberón 4 ➕<span class="done-tick" id="bib3">○</span></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div><div class="bl bl-empty"></div></div>
   <div class="trow"><span class="ttime">16:30</span><div class="bl bl-siesta tap" onclick="toggleSiesta(3)">Siesta 4→17:15<span class="done-tick" id="s3">○</span></div><div class="bl bl-paseo">Paseo</div><div class="bl bl-paseo">Paseo</div><div class="bl bl-empty"></div></div>
 

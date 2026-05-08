@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Leo 🍼 Familia</title>
+<style>
+:root {
+  --gd: #3B6D11; --gm: #639922; --gl: #C0DD97;
+  --gp: #EAF3DE; --gw: #9FE1CB; --gt: #1D9E75;
+  --yw: #FAC775; --yp: #FAEEDA; --yd: #412402;
+  --sa: #F5C4B3; --sd: #712B13;
+  --gray: #F5F5F5; --gmed: #D9D9D9; --gtxt: #444441;
+  --white: #ffffff; --text: #173404;
+  --wb: #FAEEDA; --wt: #633806;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f0; min-height: 100vh; }
+
+/* HEADER */
+.hdr { background: var(--gd); color: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.hdr h1 { font-size: 15px; font-weight: 600; }
+.hdr-meta { font-size: 10px; opacity: 0.8; display: flex; align-items: center; gap: 5px; }
+.sdot { width: 7px; height: 7px; border-radius: 50%; background: var(--gl); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* CUIDADOR BANNER */
+.cuidador-banner { padding: 8px 16px; font-size: 12px; font-weight: 600; text-align: center; transition: all 0.3s; }
+
+/* TABS */
+.tabs { display: flex; background: white; border-bottom: 1px solid var(--gmed); position: sticky; top: 44px; z-index: 99; }
+.tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 11px; font-weight: 500; color: var(--gtxt); cursor: pointer; border-bottom: 2px solid transparent; }
+.tab.active { color: var(--gd); border-bottom-color: var(--gd); }
+.tab-icon { font-size: 15px; display: block; margin-bottom: 2px; }
+
+.panel { display: none; padding: 12px; }
+.panel.active { display: block; }
+
+/* BLOCKS */
+.sec { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: white; background: var(--gm); padding: 5px 10px; border-radius: 6px; margin: 10px 0 5px; }
+.bl { border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 600; min-height: 28px; display: flex; align-items: center; }
+.bl-siesta { background: var(--gl); color: var(--text); }
+.bl-bib    { background: var(--yw); color: var(--yd); }
+.bl-banio  { background: var(--sa); color: var(--sd); }
+.bl-duerme { background: var(--gw); color: #04342C; }
+.bl-paseo  { background: var(--gw); color: #04342C; }
+.bl-warn   { background: var(--yp); color: var(--wt); border: 1.5px dashed #BA7517; }
+.bl-cuidador { border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700; }
+
+/* AGENDA ROW */
+.arow { display: grid; grid-template-columns: 52px 1fr auto; gap: 6px; align-items: center; margin-bottom: 4px; }
+.atime { font-size: 11px; color: var(--gtxt); font-weight: 600; }
+
+/* ALERT */
+.alert { border-radius: 8px; padding: 10px 12px; font-size: 11px; margin: 8px 0; border-left: 3px solid; }
+.alert-w { background: var(--yp); color: var(--wt); border-color: #BA7517; }
+.alert-ok { background: var(--gp); color: var(--gd); border-color: var(--gm); }
+.alert-i { background: var(--gl); color: var(--text); border-color: var(--gd); }
+
+/* BTN */
+.btn { font-size: 12px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--gm); background: var(--gp); color: var(--gd); font-weight: 600; cursor: pointer; }
+.btn:active { opacity: 0.8; }
+
+/* REPARTO */
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.score-card { border-radius: 12px; padding: 14px; text-align: center; }
+.score-name { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+.score-timer { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.score-pts { font-size: 13px; font-weight: 600; margin-top: 4px; }
+.score-sub { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+.score-btn { margin-top: 10px; width: 100%; padding: 10px; font-size: 12px; border-radius: 8px; border: 1px solid; font-weight: 600; cursor: pointer; }
+
+.bar-wrap { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.bar-lbl { font-size: 11px; color: var(--gtxt); width: 44px; }
+.bar-track { flex: 1; background: #f0f0f0; border-radius: 99px; height: 10px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
+.bar-pct { font-size: 11px; font-weight: 600; width: 36px; text-align: right; }
+
+.tarea-wrap { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.tarea-title { font-size: 11px; font-weight: 700; color: var(--gd); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.tarea-sel { width: 100%; font-size: 13px; padding: 8px 10px; border: 1px solid var(--gmed); border-radius: 8px; background: white; margin-bottom: 8px; }
+.tarea-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tarea-btn-mar { padding: 10px; font-size: 12px; border-radius: 8px; border: 1px solid var(--gm); background: var(--gp); color: var(--gd); font-weight: 600; cursor: pointer; }
+.tarea-btn-mauri { padding: 10px; font-size: 12px; border-radius: 8px; border: 1px solid var(--gm); background: var(--gl); color: var(--text); font-weight: 600; cursor: pointer; }
+
+.log-wrap { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.log-entry { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 6px; font-size: 11px; margin-bottom: 3px; }
+
+.hist-wrap { background: white; border-radius: 12px; padding: 14px; }
+.hist-row { border-bottom: 0.5px solid #f0f0f0; padding-bottom: 6px; margin-bottom: 6px; }
+.hist-lbl { display: flex; justify-content: space-between; font-size: 10px; color: var(--gtxt); margin-bottom: 3px; }
+.hist-bar { display: flex; height: 6px; border-radius: 99px; overflow: hidden; }
+.hist-total { margin-top: 8px; padding: 8px; background: var(--gp); border-radius: 8px; display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--gd); }
+
+/* ESCENARIOS */
+.sc-card { background: white; border: 1px solid var(--gmed); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.sc-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.sc-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; display: inline-block; margin-bottom: 8px; }
+.sc-warn { background: var(--yp); color: var(--wt); }
+.sc-ok { background: var(--gp); color: var(--gd); }
+.sc-info { background: var(--gl); color: var(--text); }
+.step { display: flex; gap: 8px; padding: 5px 0; border-bottom: 0.5px solid var(--gray); font-size: 11px; color: var(--gtxt); }
+.step:last-child { border: none; }
+.step-t { font-size: 10px; font-weight: 700; color: var(--text); min-width: 72px; }
+
+/* CHECKLIST */
+.ck-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.ck-item.done { opacity: 0.4; text-decoration: line-through; }
+.ck-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; }
+.ck-item.done .ck-circle { background: var(--gm); border-color: var(--gm); color: white; }
+
+.sync-bar { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--gtxt); background: white; padding: 6px 12px; border-radius: 8px; margin-bottom: 10px; }
+.fb-badge { background: var(--yp); color: var(--wt); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>🍼 Leo · Familia</h1>
+    <div class="hdr-meta"><span class="sdot"></span><span id="sync-status">Conectando...</span></div>
+  </div>
+  <div style="font-size:10px;opacity:0.8;text-align:right" id="hdr-date"></div>
+</div>
+
+<div id="cuidador-banner" class="cuidador-banner" style="background:var(--gp);color:var(--gd)">
+  Con Leo ahora: <span id="cuidador-ahora">—</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('reparto',this)"><span class="tab-icon">⚖️</span>Reparto</div>
+  <div class="tab" onclick="showTab('agenda',this)"><span class="tab-icon">📅</span>Agenda</div>
+  <div class="tab" onclick="showTab('escenarios',this)"><span class="tab-icon">⚡</span>Escenarios</div>
+</div>
+
+<!-- ══════ REPARTO ══════ -->
+<div id="tab-reparto" class="panel active">
+  <div class="sync-bar"><span class="sdot"></span>Tiempo real <span class="fb-badge">Firebase</span></div>
+
+  <!-- Abuelos -->
+  <div style="background:var(--yp);border:1px solid var(--yw);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--yd)">👵 Leo con abuelos</div>
+      <div style="font-size:10px;color:var(--gtxt);margin-top:2px">Pausa ambos cronómetros</div>
+    </div>
+    <button id="btn-abuelos" class="btn" style="background:var(--yp);color:var(--yd);border-color:var(--yw)" onclick="toggleAbuelos()">Activar</button>
+  </div>
+
+  <!-- Score cards -->
+  <div class="score-grid">
+    <div class="score-card" style="background:var(--gp)">
+      <div class="score-name" style="color:var(--gd)">MAR</div>
+      <div class="score-timer" style="color:var(--gd)" id="timer-mar">00:00:00</div>
+      <div class="score-pts" style="color:var(--gd)"><span id="pts-mar-hoy">0</span> pts hoy</div>
+      <div class="score-sub" style="color:var(--gd)" id="timer-mar-sub">0h 0min</div>
+      <button id="btn-mar" class="score-btn" style="background:var(--gp);color:var(--gd);border-color:var(--gm)" onclick="toggleTimer('mar')">▶ Estoy con Leo</button>
+    </div>
+    <div class="score-card" style="background:var(--gl)">
+      <div class="score-name" style="color:var(--text)">MAURI</div>
+      <div class="score-timer" style="color:var(--text)" id="timer-mauri">00:00:00</div>
+      <div class="score-pts" style="color:var(--text)"><span id="pts-mauri-hoy">0</span> pts hoy</div>
+      <div class="score-sub" style="color:var(--text)" id="timer-mauri-sub">0h 0min</div>
+      <button id="btn-mauri" class="score-btn" style="background:var(--gl);color:var(--text);border-color:var(--gm)" onclick="toggleTimer('mauri')">▶ Estoy con Leo</button>
+    </div>
+  </div>
+
+  <!-- Barra comparativa -->
+  <div class="bar-wrap">
+    <div style="font-size:11px;font-weight:700;color:var(--gd);margin-bottom:8px">Tiempo hoy</div>
+    <div class="bar-row">
+      <div class="bar-lbl">Mar</div>
+      <div class="bar-track"><div id="bar-t-mar" class="bar-fill" style="background:var(--gp);width:50%"></div></div>
+      <div class="bar-pct" id="pct-t-mar" style="color:var(--gd)">50%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Mauri</div>
+      <div class="bar-track"><div id="bar-t-mauri" class="bar-fill" style="background:var(--gl);width:50%"></div></div>
+      <div class="bar-pct" id="pct-t-mauri" style="color:var(--text)">50%</div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--gd);margin-bottom:8px">Puntos hoy</div>
+    <div class="bar-row">
+      <div class="bar-lbl">Mar</div>
+      <div class="bar-track"><div id="bar-p-mar" class="bar-fill" style="background:var(--gp);width:50%"></div></div>
+      <div class="bar-pct" id="pct-p-mar" style="color:var(--gd)">50%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Mauri</div>
+      <div class="bar-track"><div id="bar-p-mauri" class="bar-fill" style="background:var(--gl);width:50%"></div></div>
+      <div class="bar-pct" id="pct-p-mauri" style="color:var(--text)">50%</div>
+    </div>
+  </div>
+
+  <!-- Registrar tarea -->
+  <div class="tarea-wrap">
+    <div class="tarea-title">Registrar tarea</div>
+    <select id="pts-tarea" class="tarea-sel">
+      <optgroup label="— Leo —">
+        <option value="5" data-label="Dormirle noche">Dormirle noche — 5pts</option>
+        <option value="4" data-label="Biberón nocturno">Biberón nocturno — 4pts</option>
+        <option value="3" data-label="Cambio pañal/ropa noche">Cambio pañal/ropa noche — 3pts</option>
+        <option value="2" data-label="Dormirle siesta">Dormirle siesta — 2pts</option>
+        <option value="2" data-label="Baño">Baño — 2pts</option>
+        <option value="1" data-label="Biberón diurno">Biberón diurno — 1pt</option>
+        <option value="1" data-label="Cambio pañal/ropa día">Cambio pañal/ropa día — 1pt</option>
+        <option value="1" data-label="Paseo">Paseo — 1pt</option>
+      </optgroup>
+      <optgroup label="— Casa —">
+        <option value="3" data-label="Cocinar elaborado">Cocinar elaborado — 3pts</option>
+        <option value="2" data-label="Cocinar simple">Cocinar simple — 2pts</option>
+        <option value="1" data-label="Calentar / preparar rápido">Calentar / preparar rápido — 1pt</option>
+        <option value="2" data-label="Compra">Compra — 2pts</option>
+        <option value="2" data-label="Lavadora">Lavadora — 2pts</option>
+        <option value="2" data-label="Limpieza manual">Limpieza manual — 2pts</option>
+        <option value="1" data-label="Secadora">Secadora — 1pt</option>
+        <option value="1" data-label="Lavavajillas">Lavavajillas — 1pt</option>
+        <option value="1" data-label="Preparar espacio Roborock">Preparar espacio Roborock — 1pt</option>
+        <option value="1" data-label="Farmacia">Farmacia — 1pt</option>
+      </optgroup>
+    </select>
+    <div class="tarea-btns">
+      <button class="tarea-btn-mar" onclick="addPuntos('mar')">+ Mar lo hizo</button>
+      <button class="tarea-btn-mauri" onclick="addPuntos('mauri')">+ Mauri lo hizo</button>
+    </div>
+  </div>
+
+  <!-- Log hoy -->
+  <div class="log-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="tarea-title" style="margin:0">Registro de hoy</div>
+      <button onclick="resetPuntosHoy()" style="font-size:10px;color:var(--gtxt);background:none;border:none;cursor:pointer">Borrar día</button>
+    </div>
+    <div id="pts-log"></div>
+  </div>
+
+  <!-- Historial semanal -->
+  <div class="hist-wrap">
+    <div class="tarea-title">Semana — tiempo + puntos</div>
+    <div id="hist-semanal"></div>
+  </div>
+</div>
+
+<!-- ══════ AGENDA ══════ -->
+<div id="tab-agenda" class="panel">
+  <div class="sync-bar"><span class="sdot"></span>Tiempo real <span class="fb-badge">Firebase</span></div>
+
+  <div class="sec">Mañana</div>
+  <div class="arow"><span class="atime">08:00</span><div class="bl bl-bib" style="cursor:pointer" onclick="toggleBib(0)">Biberón 1 <span id="bib0">○</span></div><div id="cuid-08" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">09:45</span><div class="bl bl-siesta" style="cursor:pointer" onclick="toggleSiesta(0)">Siesta 1 → 10:45 <span id="s0">○</span></div><div id="cuid-10" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">11:00</span><div class="bl bl-warn" style="cursor:pointer" onclick="toggleBib(1)">Biberón 2 ➕ <span id="bib1">○</span></div><div id="cuid-11" class="bl-cuidador" style="font-size:10px"></div></div>
+
+  <div class="sec">Mediodía</div>
+  <div class="arow"><span class="atime">11:45</span><div class="bl bl-siesta" style="cursor:pointer" onclick="toggleSiesta(1)">Siesta 2 → 12:30 <span id="s1">○</span></div><div id="cuid-12" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">12:30</span><div class="bl bl-paseo">Paseo</div><div id="cuid-12b" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">13:30</span><div class="bl bl-bib" style="cursor:pointer" onclick="toggleBib(2)">Biberón 3 <span id="bib2">○</span></div><div id="cuid-13" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">14:00</span><div class="bl bl-siesta" style="cursor:pointer" onclick="toggleSiesta(2)">Siesta larga → 15:45 <span id="s2">○</span></div><div id="cuid-14" class="bl-cuidador" style="font-size:10px"></div></div>
+
+  <div class="sec">Tarde</div>
+  <div class="arow"><span class="atime">16:00</span><div class="bl bl-warn" style="cursor:pointer" onclick="toggleBib(3)">Biberón 4 ➕ <span id="bib3">○</span></div><div id="cuid-16" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">16:30</span><div class="bl bl-siesta" style="cursor:pointer" onclick="toggleSiesta(3)">Siesta 4 → 17:15 <span id="s3">○</span></div><div id="cuid-16b" class="bl-cuidador" style="font-size:10px"></div></div>
+
+  <div class="sec">Noche</div>
+  <div class="arow"><span class="atime">19:00</span><div class="bl bl-warn" style="cursor:pointer" onclick="toggleBib(4)">Biberón 5 ➕ <span id="bib4">○</span></div><div id="cuid-19" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">19:30</span><div class="bl bl-banio">Baño + calma</div><div id="cuid-19b" class="bl-cuidador" style="font-size:10px"></div></div>
+  <div class="arow"><span class="atime">20:30</span><div class="bl bl-duerme">Duerme</div><div></div></div>
+  <div class="arow"><span class="atime">Noche</span><div class="bl bl-bib">1-2 tomas</div><div></div></div>
+
+  <div class="alert alert-w" style="margin-top:10px">⚠️ Ventana vigilia final 18:00→20:30 = 2h30. Adelantar siesta 4 a 16:30 o dormir a las 20:00.</div>
+
+  <!-- Benidorm -->
+  <div style="background:var(--gp);border:1px solid var(--gl);border-radius:12px;padding:12px;margin-top:12px">
+    <div style="font-size:12px;font-weight:700;color:var(--gd);margin-bottom:8px">🏖️ Yiya y Ángel — Benidorm</div>
+    <div id="benidorm-list"></div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <input id="ben-fecha" placeholder="Fecha ej: 15-17 jun" style="font-size:12px;padding:6px 8px;border:1px solid var(--gmed);border-radius:8px;width:130px">
+      <input id="ben-nota" placeholder="Motivo" style="font-size:12px;padding:6px 8px;border:1px solid var(--gmed);border-radius:8px;flex:1">
+      <button class="btn" onclick="addBenidorm()">Agendar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ESCENARIOS ══════ -->
+<div id="tab-escenarios" class="panel">
+
+  <div class="sc-card">
+    <div class="sc-title">🌙 Cena fuera → vuelta 21-22h</div>
+    <div class="sc-badge sc-warn">ajusta el día siguiente</div>
+    <div class="step"><span class="step-t">Ese día</span>Siesta 4 antes de 16:00. Biberón 5 antes de salir ~18:30.</div>
+    <div class="step"><span class="step-t">Al volver</span>Leo ya duerme — NO despertéis. Toma nocturna sobre la marcha.</div>
+    <div class="step"><span class="step-t">Día siguiente</span>Despertar 30-60 min más tarde. No forcéis el horario.</div>
+    <div class="step"><span class="step-t">Clave</span>El plan se autorregula en 1-2 días. No recuperéis forzando siestas.</div>
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-title">😴 Siesta saltada — plan de rescate</div>
+    <div class="sc-badge sc-warn">por orden</div>
+    <div class="step"><span class="step-t">Siesta 1</span>No duerme → adelantar siesta 2 a las 11:00. Vigilia siguiente máx 1h.</div>
+    <div class="step"><span class="step-t">Siesta 2</span>No duerme → siesta larga a las 12:30. Carrito si hace falta.</div>
+    <div class="step"><span class="step-t">Siesta 3</span>No duerme → siesta 4 antes de 16:30. Noche a las 20:00.</div>
+    <div class="step"><span class="step-t">Siesta 4</span>No duerme → noche a las 19:30. Señal de sobrecansancio.</div>
+    <div class="step"><span class="step-t">Regla de oro</span>Siesta saltada = acortar vigilia siguiente + adelantar noche. NUNCA alargar.</div>
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-title">👵 Leo con Emilia</div>
+    <div class="sc-badge sc-info">check antes de salir</div>
+    <div class="step"><span class="step-t">Preparad</span>Biberones listos con cantidad y temperatura. Foto del planning.</div>
+    <div class="step"><span class="step-t">Rutina</span>Señales de sueño: frotar ojos, mirada perdida, bostezo → siesta YA.</div>
+    <div class="step"><span class="step-t">Contacto</span>Número pediatra accesible. Alarma: llanto >1h o rechazo total.</div>
+    <div class="step"><span class="step-t">Al volver</span>Recalculad ventana desde el último despertar real.</div>
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-title">🏖️ Visita Yiya y Ángel — Benidorm</div>
+    <div class="sc-badge sc-ok">planificad con antelación</div>
+    <div class="step"><span class="step-t">Viaje</span>Salid después de siesta larga (16:00+) o muy temprano para que duerma en coche.</div>
+    <div class="step"><span class="step-t">Biberones</span>Llevar cantidad extra + agua. Calcular tomas del trayecto.</div>
+    <div class="step"><span class="step-t">Allí</span>Mantened rutina. Entorno nuevo = más estimulación → vigilad sobrecansancio.</div>
+    <div class="step"><span class="step-t">Vuelta</span>Esperables 1-2 días de desajuste. Normal, no patológico.</div>
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-title">🏃 Actividad padres en horario Leo</div>
+    <div class="sc-badge sc-ok">sin problema</div>
+    <div class="step"><span class="step-t">Deporte Mauri</span>7-9h ideal, antes que despierte Leo.</div>
+    <div class="step"><span class="step-t">Deporte Mar</span>Siesta 1 (9:45-10:45) o siesta larga (14-16h).</div>
+    <div class="step"><span class="step-t">Ambos fuera</span>Emilia para siesta larga (14-16h): el bloque más predecible.</div>
+  </div>
+
+  <!-- Checklist -->
+  <div style="background:white;border-radius:12px;padding:14px;margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:0.05em">Checklist diario Leo</div>
+      <button onclick="resetChecklist()" style="font-size:10px;color:var(--gtxt);background:none;border:none;cursor:pointer">Reiniciar ↺</button>
+    </div>
+    <div id="checklist"></div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDSnaDSGnS8JdU8WjPMllbSR1yz8qxyPBM",
+  authDomain: "agenda-leo-a035c.firebaseapp.com",
+  databaseURL: "https://agenda-leo-a035c-default-rtdb.firebaseio.com",
+  projectId: "agenda-leo-a035c",
+  storageBucket: "agenda-leo-a035c.firebasestorage.app",
+  messagingSenderId: "580670915038",
+  appId: "1:580670915038:web:af887679247860ea985d4f"
+};
+
+let db, dbRef;
+let S = {
+  bibs: [false,false,false,false,false],
+  siestas: [false,false,false,false],
+  checkDone: Array(12).fill(false),
+  timers: {},
+  puntosHistory: {},
+  timerHistory: {},
+  benidorm: []
+};
+
+const checkItems = [
+  {text:'Biberón 1 (08:00)', bg:'#FAC775', color:'#412402', bib:0},
+  {text:'Siesta 1 (09:45)',  bg:'#C0DD97', color:'#173404', siesta:0},
+  {text:'Biberón 2 (11:00)', bg:'#FAC775', color:'#412402', bib:1},
+  {text:'Siesta 2 (11:45)',  bg:'#C0DD97', color:'#173404', siesta:1},
+  {text:'Paseo mediodía',    bg:'#9FE1CB', color:'#04342C'},
+  {text:'Biberón 3 (13:30)', bg:'#FAC775', color:'#412402', bib:2},
+  {text:'Siesta larga (14:00)', bg:'#C0DD97', color:'#173404', siesta:2},
+  {text:'Biberón 4 (16:00)', bg:'#FAC775', color:'#412402', bib:3},
+  {text:'Siesta 4 (16:30)',  bg:'#C0DD97', color:'#173404', siesta:3},
+  {text:'Biberón 5 (19:00)', bg:'#FAC775', color:'#412402', bib:4},
+  {text:'Baño + rutina (19:30)', bg:'#F5C4B3', color:'#712B13'},
+  {text:'Duerme (20:30)',    bg:'#9FE1CB', color:'#04342C'}
+];
+
+// FIREBASE
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  const today = new Date().toISOString().slice(0,10);
+  dbRef = db.ref('leo/' + today);
+  dbRef.on('value', snap => {
+    const data = snap.val();
+    if (data) S = Object.assign(S, data);
+    // Si el timer estaba corriendo, recalcular elapsed desde el start guardado
+    ['mar','mauri'].forEach(w => {
+      const t = (S.timers||{})[w];
+      if (t && t.running && t.start) {
+        // Mantener running=true y start tal cual — el display calculará el tiempo correctamente
+      }
+    });
+    renderAll();
+    document.getElementById('sync-status').textContent = 'En línea · ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  });
+  db.ref('.info/connected').on('value', s => {
+    document.getElementById('sync-status').textContent = s.val() ? 'En línea' : 'Sin conexión';
+  });
+} catch(e) {
+  document.getElementById('sync-status').textContent = 'Modo local';
+  renderAll();
+}
+
+function save() { if (dbRef) dbRef.set(S).catch(console.error); }
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// HEADER DATE
+document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+
+// SHOW TAB
+function showTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// RENDER ALL
+function renderAll() {
+  renderBibs();
+  renderSiestas();
+  renderChecklist();
+  renderPuntos();
+  renderBenidorm();
+  updateCuidadorBanner();
+  updateAgendaCuidadores();
+}
+
+// BIBS & SIESTAS
+function toggleBib(i) {
+  S.bibs[i] = !S.bibs[i];
+  const bibMap = [0,2,5,7,9];
+  if (!S.checkDone) S.checkDone = Array(12).fill(false);
+  S.checkDone[bibMap[i]] = S.bibs[i];
+  save(); renderBibs(); renderChecklist();
+}
+function toggleSiesta(i) {
+  S.siestas[i] = !S.siestas[i];
+  const siestaMap = [1,3,6,8];
+  if (!S.checkDone) S.checkDone = Array(12).fill(false);
+  S.checkDone[siestaMap[i]] = S.siestas[i];
+  save(); renderSiestas(); renderChecklist();
+}
+function renderBibs() {
+  S.bibs.forEach((v,i) => { const e = document.getElementById('bib'+i); if(e) e.textContent = v?'✓':'○'; });
+}
+function renderSiestas() {
+  S.siestas.forEach((v,i) => { const e = document.getElementById('s'+i); if(e) e.textContent = v?'✓':'○'; });
+}
+
+// CHECKLIST
+function renderChecklist() {
+  const el = document.getElementById('checklist');
+  if (!el) return;
+  el.innerHTML = '';
+  checkItems.forEach((item, i) => {
+    const done = (S.checkDone||[])[i];
+    const div = document.createElement('div');
+    div.className = 'ck-item' + (done?' done':'');
+    div.style.background = done ? '#F5F5F5' : item.bg;
+    div.style.color = done ? '#888' : item.color;
+    div.onclick = () => {
+      if (!S.checkDone) S.checkDone = Array(12).fill(false);
+      S.checkDone[i] = !S.checkDone[i];
+      if (item.bib !== undefined) S.bibs[item.bib] = S.checkDone[i];
+      if (item.siesta !== undefined) S.siestas[item.siesta] = S.checkDone[i];
+      save(); renderChecklist(); renderBibs(); renderSiestas();
+    };
+    const circle = document.createElement('div');
+    circle.className = 'ck-circle';
+    circle.style.borderColor = done ? '#639922' : item.color;
+    circle.style.background = done ? '#639922' : 'transparent';
+    circle.style.color = 'white';
+    if (done) circle.textContent = '✓';
+    div.appendChild(circle);
+    div.appendChild(Object.assign(document.createElement('span'), {textContent: item.text}));
+    el.appendChild(div);
+  });
+}
+function resetChecklist() {
+  S.checkDone = Array(12).fill(false);
+  S.bibs = [false,false,false,false,false];
+  S.siestas = [false,false,false,false];
+  save(); renderAll();
+}
+
+// TIMERS
+function toggleAbuelos() {
+  if (!S.timers) S.timers = {};
+  const on = S.timers.abuelos || false;
+  if (!on) {
+    const now = Date.now();
+    ['mar','mauri'].forEach(w => {
+      const t = S.timers[w];
+      if (t && t.running) { t.elapsed += now - t.start; t.running = false; t.start = null; S.timers[w] = t; }
+    });
+    S.timers.abuelos = true;
+  } else {
+    S.timers.abuelos = false;
+  }
+  save(); updateTimerDisplays(); updateCuidadorBanner();
+}
+
+function toggleTimer(who) {
+  if (S.timers && S.timers.abuelos) { alert('Leo está con los abuelos — desactívalo primero.'); return; }
+  if (!S.timers) S.timers = {};
+  const now = Date.now();
+  // Pause the other one
+  const other = who === 'mar' ? 'mauri' : 'mar';
+  const to = S.timers[other];
+  if (to && to.running) { to.elapsed += now - to.start; to.running = false; to.start = null; S.timers[other] = to; }
+  const t = S.timers[who] || {running:false, elapsed:0, start:null};
+  if (t.running) { t.elapsed += now - t.start; t.running = false; t.start = null; }
+  else { t.running = true; t.start = now; }
+  S.timers[who] = t;
+  save(); updateTimerDisplays(); updateCuidadorBanner();
+}
+
+function getTimerMs(who) {
+  const t = (S.timers||{})[who] || {running:false, elapsed:0, start:null};
+  let total = t.elapsed || 0;
+  if (t.running && t.start) total += Date.now() - t.start;
+  return total;
+}
+
+function updateTimerDisplays() {
+  ['mar','mauri'].forEach(who => {
+    const ms = getTimerMs(who);
+    const h = Math.floor(ms/3600000);
+    const m = Math.floor((ms%3600000)/60000);
+    const s = Math.floor((ms%60000)/1000);
+    const pad = n => String(n).padStart(2,'0');
+    const el = document.getElementById('timer-'+who);
+    if (el) el.textContent = pad(h)+':'+pad(m)+':'+pad(s);
+    const sub = document.getElementById('timer-'+who+'-sub');
+    if (sub) sub.textContent = h+'h '+m+'min';
+    const t = (S.timers||{})[who] || {};
+    const btn = document.getElementById('btn-'+who);
+    if (btn) {
+      btn.textContent = t.running ? '⏸ Pausar' : '▶ Estoy con Leo';
+      btn.style.background = t.running ? '#F5C4B3' : (who==='mar'?'var(--gp)':'var(--gl)');
+      btn.style.color = t.running ? '#712B13' : (who==='mar'?'var(--gd)':'var(--text)');
+    }
+  });
+  // Abuelos btn
+  const btnA = document.getElementById('btn-abuelos');
+  if (btnA) {
+    const on = (S.timers||{}).abuelos || false;
+    btnA.textContent = on ? 'Leo en casa ↩' : 'Activar';
+    btnA.style.background = on ? '#9FE1CB' : 'var(--yp)';
+    btnA.style.color = on ? '#04342C' : 'var(--yd)';
+  }
+  // Bars tiempo
+  const marMs = getTimerMs('mar');
+  const mauriMs = getTimerMs('mauri');
+  const totalT = marMs + mauriMs || 1;
+  const pctMarT = Math.round(marMs/totalT*100);
+  const bmt = document.getElementById('bar-t-mar');
+  const bmat = document.getElementById('bar-t-mauri');
+  if (bmt) bmt.style.width = pctMarT+'%';
+  if (bmat) bmat.style.width = (100-pctMarT)+'%';
+  const pmt = document.getElementById('pct-t-mar');
+  const pmat = document.getElementById('pct-t-mauri');
+  if (pmt) pmt.textContent = pctMarT+'%';
+  if (pmat) pmat.textContent = (100-pctMarT)+'%';
+}
+
+function updateCuidadorBanner() {
+  const banner = document.getElementById('cuidador-banner');
+  const label = document.getElementById('cuidador-ahora');
+  if (!banner || !label) return;
+  const timers = S.timers || {};
+  let who = '—', bg = 'var(--gp)', color = 'var(--gd)';
+  if (timers.abuelos) { who = '👵 Abuelos'; bg = 'var(--yp)'; color = 'var(--yd)'; }
+  else if (timers.mar && timers.mar.running) { who = '💚 Mar'; bg = 'var(--gp)'; color = 'var(--gd)'; }
+  else if (timers.mauri && timers.mauri.running) { who = '💚 Mauri'; bg = 'var(--gl)'; color = 'var(--text)'; }
+  label.textContent = who;
+  banner.style.background = bg;
+  banner.style.color = color;
+}
+
+function updateAgendaCuidadores() {
+  const timers = S.timers || {};
+  let who = '';
+  if (timers.abuelos) who = '👵';
+  else if (timers.mar && timers.mar.running) who = '💚 Mar';
+  else if (timers.mauri && timers.mauri.running) who = '💚 Mauri';
+  const slots = ['cuid-08','cuid-10','cuid-11','cuid-12','cuid-12b','cuid-13','cuid-14','cuid-16','cuid-16b','cuid-19','cuid-19b'];
+  slots.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = who;
+      el.style.background = timers.abuelos ? 'var(--yp)' : (timers.mar&&timers.mar.running ? 'var(--gp)' : (timers.mauri&&timers.mauri.running ? 'var(--gl)' : 'transparent'));
+      el.style.color = timers.abuelos ? 'var(--yd)' : 'var(--gd)';
+      el.style.padding = who ? '4px 8px' : '0';
+    }
+  });
+}
+
+// PUNTOS
+function addPuntos(who) {
+  const sel = document.getElementById('pts-tarea');
+  const pts = parseInt(sel.value);
+  const label = sel.options[sel.selectedIndex].getAttribute('data-label');
+  const t = today();
+  if (!S.puntosHistory) S.puntosHistory = {};
+  if (!S.puntosHistory[t]) S.puntosHistory[t] = {mar:0, mauri:0, log:[]};
+  S.puntosHistory[t][who] += pts;
+  S.puntosHistory[t].log.push({who, pts, label, time: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})});
+  save(); renderPuntos();
+}
+
+function resetPuntosHoy() {
+  const t = today();
+  if (S.puntosHistory && S.puntosHistory[t]) { S.puntosHistory[t] = {mar:0, mauri:0, log:[]}; save(); renderPuntos(); }
+}
+
+function deletePunto(idx) {
+  const t = today();
+  if (!S.puntosHistory || !S.puntosHistory[t]) return;
+  const entry = S.puntosHistory[t].log[idx];
+  if (!entry) return;
+  S.puntosHistory[t][entry.who] -= entry.pts;
+  S.puntosHistory[t].log.splice(idx, 1);
+  save(); renderPuntos();
+}
+
+function renderPuntos() {
+  const t = today();
+  const d = (S.puntosHistory||{})[t] || {mar:0, mauri:0, log:[]};
+  const marP = d.mar||0, mauriP = d.mauri||0;
+  const totalP = marP + mauriP || 1;
+  const pctMarP = Math.round(marP/totalP*100);
+  const pm = document.getElementById('pts-mar-hoy');
+  const pma = document.getElementById('pts-mauri-hoy');
+  if (pm) pm.textContent = marP;
+  if (pma) pma.textContent = mauriP;
+  const bmp = document.getElementById('bar-p-mar');
+  const bmap = document.getElementById('bar-p-mauri');
+  if (bmp) bmp.style.width = pctMarP+'%';
+  if (bmap) bmap.style.width = (100-pctMarP)+'%';
+  const ppctm = document.getElementById('pct-p-mar');
+  const ppctma = document.getElementById('pct-p-mauri');
+  if (ppctm) ppctm.textContent = pctMarP+'%';
+  if (ppctma) ppctma.textContent = (100-pctMarP)+'%';
+  // Log
+  const logEl = document.getElementById('pts-log');
+  if (logEl) {
+    const log = d.log||[];
+    if (!log.length) { logEl.innerHTML = '<div style="font-size:11px;color:var(--gtxt)">Sin registros hoy</div>'; }
+    else {
+      logEl.innerHTML = '';
+      [...log].reverse().forEach((entry, i) => {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.style.background = entry.who==='mar' ? 'var(--gp)' : 'var(--gl)';
+        div.style.color = entry.who==='mar' ? 'var(--gd)' : 'var(--text)';
+        div.innerHTML = `<span>${entry.who==='mar'?'Mar':'Mauri'} — ${entry.label}</span>
+          <span style="display:flex;align-items:center;gap:6px">
+            <b>+${entry.pts}pts</b>
+            <span style="font-size:10px;opacity:0.6">${entry.time}</span>
+            <span style="cursor:pointer;opacity:0.4;font-size:14px" onclick="deletePunto(${log.length-1-i})">×</span>
+          </span>`;
+        logEl.appendChild(div);
+      });
+    }
+  }
+  renderHistSemanal();
+}
+
+function renderHistSemanal() {
+  const el = document.getElementById('hist-semanal');
+  if (!el) return;
+  const ph = S.puntosHistory || {};
+  const th = S.timerHistory || {};
+  const allDays = [...new Set([...Object.keys(ph), ...Object.keys(th)])].sort().slice(-7).reverse();
+  if (!allDays.length) { el.innerHTML = '<div style="font-size:11px;color:var(--gtxt)">Sin datos todavía</div>'; return; }
+  el.innerHTML = '';
+  let totMarP=0, totMauriP=0, totMarT=0, totMauriT=0;
+  const fmtMs = ms => { const h=Math.floor(ms/3600000); const m=Math.floor((ms%3600000)/60000); return h+'h '+m+'m'; };
+  allDays.forEach(day => {
+    const p = ph[day] || {mar:0,mauri:0};
+    const ti = th[day] || {mar:0,mauri:0};
+    const marP = p.mar||0, mauriP = p.mauri||0;
+    const marT = ti.mar||0, mauriT = ti.mauri||0;
+    totMarP+=marP; totMauriP+=mauriP; totMarT+=marT; totMauriT+=mauriT;
+    const totalP = marP+mauriP||1, totalT = marT+mauriT||1;
+    const date = new Date(day).toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
+    const row = document.createElement('div');
+    row.className = 'hist-row';
+    row.innerHTML = `
+      <div class="hist-lbl"><span>${date}</span><span>Mar ${marP}pts / ${fmtMs(marT)} · Mauri ${mauriP}pts / ${fmtMs(mauriT)}</span></div>
+      <div style="font-size:9px;color:var(--gtxt);margin-bottom:2px">Puntos</div>
+      <div class="hist-bar" style="margin-bottom:4px">
+        <div style="background:var(--gp);width:${Math.round(marP/totalP*100)}%"></div>
+        <div style="background:var(--gl);flex:1"></div>
+      </div>
+      <div style="font-size:9px;color:var(--gtxt);margin-bottom:2px">Tiempo</div>
+      <div class="hist-bar">
+        <div style="background:var(--gp);width:${Math.round(marT/totalT*100)}%"></div>
+        <div style="background:var(--gl);flex:1"></div>
+      </div>`;
+    el.appendChild(row);
+  });
+  const tot = document.createElement('div');
+  tot.className = 'hist-total';
+  const fmtMsS = ms => { const h=Math.floor(ms/3600000); const m=Math.floor((ms%3600000)/60000); return h+'h'+m+'m'; };
+  tot.innerHTML = `<span>Total semana</span><span>Mar ${totMarP}pts ${fmtMsS(totMarT)} · Mauri ${totMauriP}pts ${fmtMsS(totMauriT)}</span>`;
+  el.appendChild(tot);
+}
+
+// BENIDORM
+function addBenidorm() {
+  const f = document.getElementById('ben-fecha').value.trim();
+  const n = document.getElementById('ben-nota').value.trim();
+  if (!f) return;
+  if (!S.benidorm) S.benidorm = [];
+  S.benidorm.push({fecha:f, nota:n});
+  document.getElementById('ben-fecha').value='';
+  document.getElementById('ben-nota').value='';
+  save(); renderBenidorm();
+}
+function delBenidorm(i) { S.benidorm.splice(i,1); save(); renderBenidorm(); }
+function renderBenidorm() {
+  const el = document.getElementById('benidorm-list');
+  if (!el) return;
+  el.innerHTML = '';
+  (S.benidorm||[]).forEach((b,i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;background:var(--gl);color:var(--text);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600;margin-bottom:4px';
+    div.innerHTML = '📍 '+b.fecha+(b.nota?' — '+b.nota:'')+' <span style="cursor:pointer;opacity:0.4;font-size:14px" onclick="delBenidorm('+i+')">×</span>';
+    el.appendChild(div);
+  });
+}
+
+renderAll();
+setInterval(updateTimerDisplays, 1000);
+setInterval(updateAgendaCuidadores, 5000);
+setInterval(renderPuntos, 30000);
+setInterval(() => {
+  const running = ['mar','mauri'].some(w => (S.timers||{})[w] && S.timers[w].running);
+  if (running) {
+    const now = Date.now();
+    const t = today();
+    if (!S.timerHistory) S.timerHistory = {};
+    if (!S.timerHistory[t]) S.timerHistory[t] = {mar:0, mauri:0};
+    ['mar','mauri'].forEach(w => {
+      const tm = (S.timers||{})[w];
+      if (tm && tm.running) {
+        S.timerHistory[t][w] = (tm.elapsed||0) + (now - tm.start);
+      }
+    });
+    save();
+  }
+}, 30000);
+</script>
+</body>
+</html>
